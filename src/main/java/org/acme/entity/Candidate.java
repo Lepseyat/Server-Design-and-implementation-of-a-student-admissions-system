@@ -1,10 +1,15 @@
 package org.acme.entity;
 
-import jakarta.persistence.*;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "candidates") // Maps to the 'candidates' table
-public class Candidate {
+public class Candidate extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment primary key
@@ -13,14 +18,13 @@ public class Candidate {
     private String name;
     private String surname;
     private String lastName;
-    private String email;
+    private String egn;
     private String phone;
+    private String email;
 
-    // Default constructor
     public Candidate() {
     }
 
-    // Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -59,6 +63,14 @@ public class Candidate {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getEgn() {
+        return egn;
+    }
+
+    public void setEgn(String egn) {
+        this.egn = egn;
     }
 
     public String getPhone() {

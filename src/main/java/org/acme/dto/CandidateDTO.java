@@ -6,6 +6,7 @@ public class CandidateDTO {
     private String surname;
     private String lastName;
     private String email;
+    private String egn;
     private String phone;
 
     // Default constructor (required for serialization)
@@ -13,12 +14,13 @@ public class CandidateDTO {
     }
 
     // Parameterized constructor
-    public CandidateDTO(Integer id, String name, String surname, String lastName, String email, String phone) {
+    public CandidateDTO(Integer id, String name, String surname, String lastName, String egn, String phone, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.lastName = lastName;
         this.email = email;
+        this.egn = egn;
         this.phone = phone;
     }
 
@@ -61,6 +63,14 @@ public class CandidateDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getEgn() {
+        return egn;
+    }
+
+    public void setEgn(String egn) {
+        this.egn = egn;
     }
 
     public String getPhone() {
