@@ -13,7 +13,7 @@ public class Candidate extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment primary key
-    private Integer id;
+    private Long id;
 
     private String name;
     private String surname;
@@ -27,11 +27,11 @@ public class Candidate extends PanacheEntityBase {
     public Candidate() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

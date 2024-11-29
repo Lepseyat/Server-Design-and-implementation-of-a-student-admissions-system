@@ -1,7 +1,7 @@
 package org.acme.dto;
 
 public class CandidateDTO {
-    private Integer id;
+    private Long id;
     private String name;
     private String surname;
     private String lastName;
@@ -14,7 +14,7 @@ public class CandidateDTO {
     }
 
     // Parameterized constructor
-    public CandidateDTO(Integer id, String name, String surname, String lastName, String egn, String phone, String email) {
+    public CandidateDTO(Long id, String name, String surname, String lastName, String egn, String phone, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -25,11 +25,11 @@ public class CandidateDTO {
     }
 
     // Getters and Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
