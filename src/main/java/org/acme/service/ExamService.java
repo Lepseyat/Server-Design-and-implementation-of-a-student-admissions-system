@@ -1,36 +1,55 @@
 package org.acme.service;
 
-import jakarta.enterprise.context.ApplicationScoped; // For CDI-managed bean
-import jakarta.inject.Inject; // For dependency injection
-import org.acme.entity.Exam; // Replace with the correct package for your model
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.SecurityContext;
+import org.acme.dto.ExamRequest;
+import org.acme.entity.Exam;
 import org.acme.entity.ExamStatus;
+import org.acme.repository.ExamRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 
-import org.acme.dto.ExamRequest; // Replace with the correct package for your DTO
-import org.acme.repository.ExamRepository; // Replace with the correct package for your repository
-
-import jakarta.transaction.Transactional;
-
-@ApplicationScoped  // Ensure this is a CDI-managed bean
+@ApplicationScoped
 public class ExamService {
 
     @Inject
-    private ExamRepository examRepository;  // Inject ExamRepository
+    private ExamRepository examRepository;
+
+    @Inject
+    SecurityContext securityContext;
 
     @Transactional
+    @RolesAllowed("USER")
     public void scheduleExam(ExamRequest request) {
-    Exam exam = new Exam();
+        Exam exam = new Exam();
 
-    // Set fields from request
-    exam.setCandidateId(request.getCandidateId());
-    exam.setExamDateTime(LocalDateTime.parse(request.getExamDateTime()));
-    exam.setSubject(request.getSubject());
-    exam.setStatus(ExamStatus.PENDING);
+        // Extract candidate ID from the security context (JWT subject)
+        String candidateId = securityContext.getUserPrincipal().getName();
 
-    // Persist the exam entity
-    examRepository.persist(exam);
-}
+        // Parse the candidateId to Long, assuming it's a numeric ID
+        try {
+            exam.setCandidateId(Long.parseLong(candidateId));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid candidate ID in JWT token", e);
+        }
 
+        // Set remaining fields
+        try {
+            // Parse the exam date-time from the request
+            exam.setExamDateTime(LocalDateTime.parse(request.getExamDateTime()));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date-time format: " + request.getExamDateTime(), e);
+        }
 
+        // Set exam subject and status
+        exam.setSubject(request.getSubject());
+        exam.setStatus(ExamStatus.PENDING); // Default to PENDING status
+
+        // Persist the exam entity to the database
+        examRepository.persist(exam);
+    }
 }
