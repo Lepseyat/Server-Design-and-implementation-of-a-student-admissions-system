@@ -5,15 +5,18 @@ import io.quarkus.mailer.reactive.ReactiveMailer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+@ApplicationScoped
 public class EmailService {
 
     @Inject
     ReactiveMailer mailer;
 
-    public void sendEmail(String recipient, String password) {
-        String body = String.format(
-            "<html><body><h3>Welcome!</h3><p>Your password is: %s</p></body></html>", password);
-        
-        mailer.send(Mail.withHtml(recipient, "Welcome to our service", body));
+    public void sendWelcomeEmail(String email, String subject, String body) {
+        mailer.send(Mail.withHtml(email, subject, body))
+            .subscribe()
+            .with(
+                success -> System.out.println("Email sent successfully to " + email),
+                failure -> System.err.println("Failed to send email: " + failure.getMessage())
+            );
     }
 }

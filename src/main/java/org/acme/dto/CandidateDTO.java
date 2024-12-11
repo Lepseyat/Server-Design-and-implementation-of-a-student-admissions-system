@@ -4,7 +4,7 @@ public class CandidateDTO {
     private Long id;
     private String name;
     private String surname;
-    private String lastName;
+    private String lastname;
     private String email;
     private String egn;
     private String phone;
@@ -14,11 +14,11 @@ public class CandidateDTO {
     }
 
     // Parameterized constructor
-    public CandidateDTO(Long id, String name, String surname, String lastName, String egn, String phone, String email) {
+    public CandidateDTO(Long id, String name, String surname, String lastname, String egn, String phone, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.lastName = lastName;
+        this.lastname = lastname;
         this.email = email;
         this.egn = egn;
         this.phone = phone;
@@ -49,12 +49,12 @@ public class CandidateDTO {
         this.surname = surname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getEmail() {
@@ -88,7 +88,7 @@ public class CandidateDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", lastname='" + lastname + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 '}';

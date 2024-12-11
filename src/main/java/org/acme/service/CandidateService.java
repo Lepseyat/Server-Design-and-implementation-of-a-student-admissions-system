@@ -41,7 +41,7 @@ public class CandidateService {
         Candidate candidate = new Candidate();
         candidate.setName(candidateDTO.getName());
         candidate.setSurname(candidateDTO.getSurname());
-        candidate.setLastName(candidateDTO.getLastName());
+        candidate.setLastName(candidateDTO.getLastname());
         candidate.setEgn(candidateDTO.getEgn());
         candidate.setPhone(candidateDTO.getPhone());
         candidate.setEmail(candidateDTO.getEmail());
