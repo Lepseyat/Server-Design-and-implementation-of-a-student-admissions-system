@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.inject.Inject;
 import org.acme.service.ExamService; 
 import org.acme.dto.ExamRequest;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/api/exam")
 @Produces(MediaType.APPLICATION_JSON)
@@ -16,16 +17,32 @@ import org.acme.dto.ExamRequest;
 public class ExamController {
 
     @Inject
+    private SecurityContext securityContext; // Inject SecurityContext
+
+    @Inject
     ExamService examService; // A service class to handle business logic and database operations
 
     @POST
     @Path("/schedule")
     public Response scheduleExam(ExamRequest request) {
+        // Debugging the authentication process
+        if (securityContext.getUserPrincipal() != null) {
+            String candidateId = securityContext.getUserPrincipal().getName();
+            System.out.println("Authenticated user: " + candidateId);  // Should print the user's name
+        } else {
+            System.out.println("No authenticated user found.");  // Will print if the token is invalid or missing
+        }
+
         try {
+            // Scheduling the exam
             examService.scheduleExam(request); // Pass request data to the service
             return Response.status(Response.Status.CREATED).entity("Exam scheduled successfully!").build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error scheduling exam: " + e.getMessage()).build();
+            // Log the full exception stack trace for better debugging
+            e.printStackTrace();  // Or use a logging framework like SLF4J or Log4j for better logging
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                           .entity("Error scheduling exam: " + e.getClass().getName() + " - " + e.getMessage())
+                           .build();
         }
     }
 }

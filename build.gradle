@@ -29,6 +29,7 @@ dependencies {
     implementation 'io.smallrye:smallrye-jwt:3.4.0'
     implementation 'io.quarkus:quarkus-smallrye-jwt'
     implementation group: 'io.smallrye', name: 'smallrye-jwt', version: '4.6.0'
+    implementation 'io.quarkus:quarkus-mailer'
 }
 
 group 'com.tuvarna'
