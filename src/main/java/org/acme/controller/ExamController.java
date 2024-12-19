@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.inject.Inject;
 import org.acme.service.ExamService; 
-import org.acme.dto.ExamRequest;
+import org.acme.dto.ExamRequestDTO;
 import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/api/exam")
@@ -24,7 +24,7 @@ public class ExamController {
 
     @POST
     @Path("/schedule")
-    public Response scheduleExam(ExamRequest request) {
+    public Response scheduleExam(ExamRequestDTO request) {
         // Debugging the authentication process
         if (securityContext.getUserPrincipal() != null) {
             String candidateId = securityContext.getUserPrincipal().getName();

@@ -2,7 +2,7 @@ package org.acme.dto;
 
 import org.acme.entity.ExamStatus;
 
-public class ExamRequest {
+public class ExamRequestDTO {
 
     private Long candidateId;
     private String subject;

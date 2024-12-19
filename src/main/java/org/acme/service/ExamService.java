@@ -5,7 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.SecurityContext;
-import org.acme.dto.ExamRequest;
+import org.acme.dto.ExamRequestDTO;
 import org.acme.entity.Exam;
 import org.acme.entity.ExamStatus;
 import org.acme.repository.ExamRepository;
@@ -23,8 +23,7 @@ public class ExamService {
     SecurityContext securityContext;
 
     @Transactional
-    @RolesAllowed("USER")
-    public void scheduleExam(ExamRequest request) {
+    public void scheduleExam(ExamRequestDTO request) {
         Exam exam = new Exam();
 
         // Extract candidate ID from the security context (JWT subject)
