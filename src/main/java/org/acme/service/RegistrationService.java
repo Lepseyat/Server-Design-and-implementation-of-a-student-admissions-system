@@ -8,12 +8,13 @@ import jakarta.transaction.Transactional;
 import org.acme.dto.CandidateDTO;
 import org.acme.entity.Candidate;
 import org.acme.repository.CandidateRepository;
+import org.acme.util.PasswordUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class CandidateService {
+public class RegistrationService {
 
     @Inject
     CandidateRepository candidateRepository;
@@ -28,22 +29,27 @@ public class CandidateService {
     }
 
     @Transactional
-    public void save(CandidateDTO candidateDTO) {
-        // Map CandidateDTO to Candidate entity
-        Candidate candidate = mapToEntity(candidateDTO);
+public void save(CandidateDTO candidateDTO) {
+    // Map CandidateDTO to Candidate entity
+    Candidate candidate = mapToEntity(candidateDTO);
 
-        // Generate username and password
-        String username = candidateDTO.getEmail();
-        String generatedPassword = "RandomGenerated123"; // Replace with a secure password generator
-        candidate.setUsername(username);
-        candidate.setPassword(generatedPassword);
+    // Generate a random password
+    String rawPassword = PasswordUtil.generateRandomPassword();
 
-        // Persist the Candidate entity
-        candidate.persist();
+    // Hash the password securely
+    String hashedPassword = PasswordUtil.encodePassword(rawPassword);
 
-        // Send a welcome email
-        sendWelcomeEmail(candidate.getEmail(), candidate.getName(), generatedPassword);
-    }
+    // Set username and hashed password
+    String username = candidateDTO.getEmail();
+    candidate.setUsername(username);
+    candidate.setPassword(hashedPassword); // Store hashed password in the database
+
+    // Persist the Candidate entity
+    candidate.persist();
+
+    // Send a welcome email with the raw password
+    sendWelcomeEmail(candidate.getEmail(), candidate.getName(), rawPassword);
+}
 
     private void sendWelcomeEmail(String email, String name, String password) {
         String body = String.format(
@@ -82,6 +88,7 @@ public class CandidateService {
         dto.setEmail(candidate.getEmail());
         dto.setEgn(candidate.getEgn());
         dto.setPhone(candidate.getPhone());
+        dto.setUsername(candidate.getUsername());
         dto.setLatinName(candidate.getLatinName());
         dto.setLatinSurname(candidate.getLatinSurname());
         dto.setLatinLastname(candidate.getLatinLastname());
@@ -126,5 +133,13 @@ public class CandidateService {
         candidate.setSecondaryEducation(dto.getSecondaryEducation());
         candidate.setAdmin(dto.getAdmin());
         return candidate;
+    }
+
+    public CandidateDTO getCandidateById(Long id) {
+        Candidate candidate = candidateRepository.findById(id);
+        if (candidate != null) {
+            return mapToDTO(candidate);
+        }
+        return null;
     }
 }

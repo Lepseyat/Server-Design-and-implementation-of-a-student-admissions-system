@@ -163,7 +163,7 @@ public class Candidate extends PanacheEntityBase {
     }
 
     public void setAdmin(Boolean admin) {
-        this.admin = admin;
+        this.admin = false;
     }
 
     public String getLatinName() {

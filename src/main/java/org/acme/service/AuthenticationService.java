@@ -21,11 +21,12 @@ public class AuthenticationService {
         if (candidate != null && candidate.getPassword().equals(password)) {
             // Generate JWT token for authenticated user
             return Jwt.issuer("http://localhost:8080")
-                    .subject(candidate.getId().toString())
-                    .claim("username", candidate.getUsername())
-                    .claim("roles", List.of("USER")) // Assign the user role
-                    .expiresIn(Duration.ofHours(12))  // Set expiration time
-                    .sign();
+        .subject(candidate.getId().toString()) // Set user ID as the subject
+        .claim("username", candidate.getUsername())
+        .claim("roles", List.of("USER"))
+        .expiresIn(Duration.ofHours(12))
+        .sign();
+
         }
         return null;  // Return null if authentication fails
     }

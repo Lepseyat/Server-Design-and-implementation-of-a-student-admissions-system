@@ -286,4 +286,5 @@ public class CandidateDTO {
     public void setSecondaryEducation(String secondaryEducation) {
         this.secondaryEducation = secondaryEducation;
     }
+    
 }
