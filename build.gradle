@@ -30,10 +30,11 @@ dependencies {
     implementation 'io.quarkus:quarkus-smallrye-jwt'
     implementation group: 'io.smallrye', name: 'smallrye-jwt', version: '4.6.0'
     implementation 'io.quarkus:quarkus-mailer'
-
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.mindrot:jbcrypt:0.4'
     implementation 'io.smallrye:smallrye-jwt:2.12.0'
+
+    implementation 'org.eclipse.parsson:parsson:1.1.7'
 }
 
 group 'com.tuvarna'

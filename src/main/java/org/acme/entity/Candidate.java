@@ -159,7 +159,7 @@ public class Candidate extends PanacheEntityBase {
     }
 
     public Boolean getAdmin() {
-        return admin;
+        return this.admin;
     }
 
     public void setAdmin(Boolean admin) {
