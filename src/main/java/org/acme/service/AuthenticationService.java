@@ -1,6 +1,7 @@
 package org.acme.service;
 
 import org.acme.entity.Candidate;
+import org.acme.util.PasswordUtil;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import jakarta.inject.Inject;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,7 +9,6 @@ import java.time.Duration;
 
 import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.build.Jwt;
-import java.util.List;
 
 @ApplicationScoped
 public class AuthenticationService {
@@ -23,23 +23,33 @@ public class AuthenticationService {
 public String authenticateAndGenerateToken(String username, String password) {
     Candidate candidate = Candidate.find("username", username).firstResult();
 
-    if (candidate != null && candidate.getPassword().equals(password)) {
+    if (candidate == null) {
+        System.out.println("No user found with username: " + username);
+        return null;  // Username not found
+    }
+
+    System.out.println("User found: " + candidate.getUsername());
+    System.out.println("Stored hashed password: " + candidate.getPassword());
+    System.out.println("Raw password provided: " + password);
+
+    boolean passwordMatches = PasswordUtil.verifyPassword(password, candidate.getPassword());
+    System.out.println("Password matches: " + passwordMatches);
+
+    if (passwordMatches) {
         System.out.println("Admin status in DB: " + candidate.getAdmin());
-        
-        // Determine the role based on the boolean column
         String role = Boolean.TRUE.equals(candidate.getAdmin()) ? "ADMIN" : "USER";
 
-        // Generate JWT token for authenticated user
         return Jwt.issuer("http://localhost:8080")
-                .subject(candidate.getId().toString()) // Set user ID as the subject
+                .subject(candidate.getId().toString())
                 .claim("username", candidate.getUsername())
-                .claim("role", role) // Use a single role as a string
+                .claim("role", role)
                 .expiresIn(Duration.ofHours(12))
                 .sign();
     }
 
-    return null;  // Return null if authentication fails
+    return null;  // Password mismatch
 }
+
     // Method to parse the JWT token
     public JsonWebToken parseToken(String token) {
         try {
