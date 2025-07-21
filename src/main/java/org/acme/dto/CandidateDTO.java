@@ -17,7 +17,7 @@ public class CandidateDTO {
     private String surname;
 
     @Column(name = "lastname")
-    private String lastname;
+    private String lastName;
 
     @Column(name = "email")
     private String email;
@@ -82,7 +82,12 @@ public class CandidateDTO {
     @Column(name = "secondary_education")
     private String secondaryEducation;
 
-    // Default constructor
+    
+    public CandidateDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public CandidateDTO() {
     }
 
@@ -111,12 +116,12 @@ public class CandidateDTO {
         this.surname = surname;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {

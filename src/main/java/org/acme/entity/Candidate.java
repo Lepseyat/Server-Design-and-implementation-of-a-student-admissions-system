@@ -3,6 +3,7 @@ package org.acme.entity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "candidates")
@@ -84,6 +85,12 @@ public class Candidate extends PanacheEntityBase {
 
     @Column(name = "secondary_education")
     private String secondaryEducation;
+
+    @Column(name = "reset_token")
+    public String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    public LocalDateTime resetTokenExpiry;
 
     // Getters and Setters
     public Long getId() {
@@ -284,5 +291,20 @@ public class Candidate extends PanacheEntityBase {
 
     public void setSecondaryEducation(String secondaryEducation) {
         this.secondaryEducation = secondaryEducation;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
     }
 }

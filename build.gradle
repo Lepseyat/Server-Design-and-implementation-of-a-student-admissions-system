@@ -33,8 +33,16 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.mindrot:jbcrypt:0.4'
     implementation 'io.smallrye:smallrye-jwt:2.12.0'
-
     implementation 'org.eclipse.parsson:parsson:1.1.7'
+    implementation platform("io.quarkus:quarkus-bom:3.21.0")
+
+    testImplementation 'io.quarkus:quarkus-junit5'
+    testImplementation 'io.rest-assured:rest-assured'
+    implementation 'io.quarkus:quarkus-arc'
+    implementation 'io.quarkus:quarkus-mailer'
+
+
+  
 }
 
 group 'com.tuvarna'

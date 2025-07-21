@@ -2,12 +2,10 @@ package org.acme.controller;
 
 import org.acme.dto.CandidateDTO;
 import org.acme.service.RegistrationService;
-
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
 import java.util.List;
 
 @Path("/candidates")
@@ -22,6 +20,7 @@ public class CandidateResourceController {
     public List<CandidateDTO> getAllCandidates() {
         return candidateService.getAllCandidates();
     }
+    
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

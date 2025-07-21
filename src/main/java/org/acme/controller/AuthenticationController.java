@@ -7,16 +7,12 @@ import jakarta.ws.rs.core.Response;
 import org.acme.service.AuthenticationService;
 import org.acme.service.RegistrationService;
 import org.eclipse.microprofile.jwt.JsonWebToken;
-
-import io.smallrye.jwt.build.Jwt;
-
 import org.acme.dto.CandidateDTO;
 import org.acme.resource.LoginRequest;
 import org.acme.resource.TokenResponse;
-import jakarta.enterprise.context.ApplicationScoped;
-import io.smallrye.jwt.auth.principal.JWTParser;
-import java.util.List;
 
+import jakarta.annotation.security.PermitAll;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @Path("/api/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -25,60 +21,62 @@ import java.util.List;
 public class AuthenticationController {
 
     @Inject
-AuthenticationService authService;
+    AuthenticationService authService;
 
-@POST
-@Path("/login")
-public Response login(LoginRequest loginRequest) {
-    String token = authService.authenticateAndGenerateToken(
-        loginRequest.getUsername(),
-        loginRequest.getPassword()
-    );
-
-    if (token != null) {
-        // Parse the generated token to extract claims
-        JsonWebToken parsedToken = authService.parseToken(token);
-        boolean isAdmin = false;
-
-        // Get the "role" claim
-        String role = parsedToken.getClaim("role");
-
-        // Debugging output: print the raw role and its value
-        System.out.println("Role claim: " + role);
-
-        // Check if the role is "ADMIN"
-        if ("ADMIN".equals(role)) {
-            isAdmin = true;
-        }
-
-        System.out.println("Is Admin: " + isAdmin);  // Debugging output
-
-        // Return the token along with admin information
-        return Response.ok(new TokenResponse(token, isAdmin)).build();
-    }
-
-    return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
-}
     @Inject
     JsonWebToken jwt;
 
     @Inject
     RegistrationService candidateService;
 
+    @POST
+    @Path("/login")
+    public Response login(LoginRequest loginRequest) {
+        String token = authService.authenticateAndGenerateToken(
+            loginRequest.getUsername(),
+            loginRequest.getPassword()
+        );
 
-    @GET
-    @Path("/profile")
-    public Response getProfile() {
-    // Extract the user ID from the JWT token
-    String userId = jwt.getSubject();
+        if (token != null) {
+            JsonWebToken parsedToken = authService.parseToken(token);
+            boolean isAdmin = false;
 
-    // Fetch user details using the CandidateService
-    CandidateDTO candidate = candidateService.getCandidateById(Long.parseLong(userId));
-    if (candidate != null) {
-        return Response.ok(candidate).build();
+            String role = parsedToken.getClaim("role");
+        
+            System.out.println("Role claim: " + role);
+
+            if ("ADMIN".equals(role)) {
+                isAdmin = true;
+            }
+
+            System.out.println("Is Admin: " + isAdmin);
+
+            return Response.ok(new TokenResponse(token, isAdmin)).build();
+        }
+
+    return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+}   
+
+    //@GET
+    //@Path("/profile")
+    //public Response getProfile() {
+    //    String userId = jwt.getSubject();
+    //
+    //    CandidateDTO candidate = candidateService.getCandidateById(Long.parseLong(userId));
+    //    if (candidate != null) {
+    //        return Response.ok(candidate).build();
+    //    }
+    //
+    //    return Response.status(Response.Status.NOT_FOUND).entity("User profile not found").build();
+    //}
+
+    @POST
+    @Path("/registration")
+    @PermitAll
+    public Response createCandidate(CandidateDTO candidateDTO) {
+        candidateService.save(candidateDTO);
+        return Response.status(Response.Status.CREATED).build();
     }
-    return Response.status(Response.Status.NOT_FOUND).entity("User profile not found").build();
-}
 
 }
 

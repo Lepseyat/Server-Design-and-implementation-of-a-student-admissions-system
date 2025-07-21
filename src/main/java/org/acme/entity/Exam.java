@@ -6,10 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import java.time.LocalDateTime;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType; 
-
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "exams")
@@ -19,18 +17,16 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "candidate_id")
-    private Long candidateId;
-
     @Column(name = "exam_date_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime examDateTime;
 
     @Column(name = "subject")
     private String subject;
 
-    @Enumerated(EnumType.STRING) // Store the enum value as a string in the database
-    @Column(name = "status")
-    private ExamStatus status;
+    @Column(nullable = false)
+    private String specialty;
+
 
     // Getters and Setters
     public Long getId() {
@@ -39,14 +35,6 @@ public class Exam {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getCandidateId() {
-        return candidateId;
-    }
-
-    public void setCandidateId(Long candidateId) {
-        this.candidateId = candidateId;
     }
 
     public LocalDateTime getExamDateTime() {
@@ -65,11 +53,11 @@ public class Exam {
         this.subject = subject;
     }
 
-    public ExamStatus getStatus() {
-        return status;
+     public String getSpecialty() {
+        return specialty;
     }
 
-    public void setStatus(ExamStatus status) {
-        this.status = status;
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
     }
 }

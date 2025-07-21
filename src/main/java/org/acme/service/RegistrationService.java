@@ -9,12 +9,16 @@ import org.acme.dto.CandidateDTO;
 import org.acme.entity.Candidate;
 import org.acme.repository.CandidateRepository;
 import org.acme.util.PasswordUtil;
+import org.acme.util.UsernameUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class RegistrationService {
+
+    @Inject
+    UsernameUtil usernameUtil;
 
     @Inject
     CandidateRepository candidateRepository;
@@ -29,62 +33,57 @@ public class RegistrationService {
     }
 
     @Transactional
-public void save(CandidateDTO candidateDTO) {
-    // Map CandidateDTO to Candidate entity
+    public void save(CandidateDTO candidateDTO) {
+
     Candidate candidate = mapToEntity(candidateDTO);
 
-    // Generate a random password
     String rawPassword = PasswordUtil.generateRandomPassword();
 
-    // Hash the password securely
     String hashedPassword = PasswordUtil.encodePassword(rawPassword);
 
-    // Set username and hashed password
-    String username = candidateDTO.getEmail();
+    String username = usernameUtil.generateUniqueUsername();
     candidate.setUsername(username);
-    candidate.setPassword(hashedPassword); // Store hashed password in the database
+    candidate.setPassword(hashedPassword);
 
-    // Persist the Candidate entity
     candidate.persist();
 
-    // Send a welcome email with the raw password
-    sendWelcomeEmail(candidate.getEmail(), candidate.getName(), rawPassword);
+
+    sendWelcomeEmail(candidate.getEmail(), candidate.getName(), username, rawPassword);
 }
 
-    private void sendWelcomeEmail(String email, String name, String password) {
-        String body = String.format(
-                """
-                <html>
-                <body>
-                    <h3>Welcome, %s!</h3>
-                    <p>You have successfully registered.</p>
-                    <p>Your login details are as follows:</p>
-                    <p><strong>Username:</strong> %s</p>
-                    <p><strong>Password:</strong> %s</p>
-                    <p>Please keep this information secure.</p>
-                    <p>Best regards,</p>
-                    <p>The Team</p>
-                </body>
-                </html>
-                """, name, email, password);
-    
-        // Log the email sending attempt
-        System.out.println("Attempting to send email to: " + email);
-    
-        mailer.send(Mail.withHtml(email, "Welcome to the Platform!", body))
-                .subscribe()
-                .with(
-                        success -> System.out.println("Email sent successfully to " + email),
-                        failure -> System.err.println("Failed to send email: " + failure.getMessage())
-                );
-    }
+    private void sendWelcomeEmail(String email, String name, String username, String password) {
+    String body = String.format(
+        """
+        <html>
+        <body>
+            <h3>Welcome, %s!</h3>
+            <p>You have successfully registered.</p>
+            <p>Your login details are as follows:</p>
+            <p><strong>Username:</strong> %s</p>
+            <p><strong>Password:</strong> %s</p>
+            <p>Please keep this information secure.</p>
+            <p>Best regards,</p>
+            <p>The Team</p>
+        </body>
+        </html>
+        """, name, username, password);
+
+    System.out.println("Attempting to send email to: " + email);
+
+    mailer.send(Mail.withHtml(email, "Welcome to the Platform!", body))
+        .subscribe()
+        .with(
+            success -> System.out.println("Email sent successfully to " + email),
+            failure -> System.err.println("Failed to send email: " + failure.getMessage())
+        );
+}
     
     private CandidateDTO mapToDTO(Candidate candidate) {
         CandidateDTO dto = new CandidateDTO();
         dto.setId(candidate.getId());
         dto.setName(candidate.getName());
         dto.setSurname(candidate.getSurname());
-        dto.setLastname(candidate.getLastName());
+        dto.setLastName(candidate.getLastName());
         dto.setEmail(candidate.getEmail());
         dto.setEgn(candidate.getEgn());
         dto.setPhone(candidate.getPhone());
@@ -112,7 +111,7 @@ public void save(CandidateDTO candidateDTO) {
         Candidate candidate = new Candidate();
         candidate.setName(dto.getName());
         candidate.setSurname(dto.getSurname());
-        candidate.setLastName(dto.getLastname());
+        candidate.setLastName(dto.getLastName());
         candidate.setEmail(dto.getEmail());
         candidate.setEgn(dto.getEgn());
         candidate.setPhone(dto.getPhone());
